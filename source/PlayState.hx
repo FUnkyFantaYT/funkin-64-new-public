@@ -270,6 +270,9 @@ class PlayState extends MusicBeatState
 	// Less laggy controls
 	private var keysArray:Array<Dynamic>;
 
+	var mariosong = 'mario-64';
+	var mariohealth:FlxSprite = new FlxSprite(0, 0);
+
 	override public function create()
 	{
 		Paths.clearStoredMemory();
@@ -1019,6 +1022,25 @@ class PlayState extends MusicBeatState
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
 
+		if(SONG.song == mariosong)
+		{
+			health = 7;
+			mariohealth.frames = Paths.getSparrowAtlas('mario health');
+			mariohealth.animation.addByPrefix('0', 'health8.png', 24);
+			mariohealth.animation.addByPrefix('1', 'health7.png', 24);
+			mariohealth.animation.addByPrefix('2', 'health6.png', 24);
+			mariohealth.animation.addByPrefix('3', 'health5.png', 24);
+			mariohealth.animation.addByPrefix('4', 'health4.png', 24);
+			mariohealth.animation.addByPrefix('5', 'health3.png', 24);
+			mariohealth.animation.addByPrefix('6', 'health2.png', 24);
+			mariohealth.animation.addByPrefix('7', 'health1.png', 24);
+			mariohealth.animation.play('7');
+			mariohealth.scale.set(7.5, 7.5);
+			mariohealth.y = FlxG.height - mariohealth.height - 5;
+			mariohealth.screenCenter(X);
+			add(mariohealth);
+		}
+
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
 		iconP1.visible = !ClientPrefs.hideHud;
@@ -1098,7 +1120,7 @@ class PlayState extends MusicBeatState
 		#end
 		
 		var daSong:String = Paths.formatToSongPath(curSong);
-		if (isStoryMode && !seenCutscene)
+		if (!seenCutscene)
 		{
 			switch (daSong)
 			{
@@ -1995,7 +2017,7 @@ class PlayState extends MusicBeatState
 
 			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, strumLine.y, i, player);
 			babyArrow.downScroll = ClientPrefs.downScroll;
-			if (!isStoryMode && !skipArrowStartTween)
+			if (!skipArrowStartTween)
 			{
 				//babyArrow.y -= 10;
 				babyArrow.alpha = 0;
@@ -2365,11 +2387,21 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
-
-		if (health > 2)
-			health = 2;
+		switch(SONG.song)
+		{
+			default:
+				if (health > 2)
+					health = 2;
+				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+			case mariosong:
+				if (health > 7)
+					health = 7;
+				iconP1.x = -500;
+				iconP2.x = -500;
+				mariohealth.animation.play(health + '');
+				mariohealth.screenCenter(X);
+		}
 
 		if (healthBar.percent < 20)
 			iconP1.animation.curAnim.curFrame = 1;
@@ -3144,12 +3176,30 @@ class PlayState extends MusicBeatState
 		if(!startingSong) {
 			notes.forEach(function(daNote:Note) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					health -= 0.05 * healthLoss;
+					switch(SONG.song)
+					{
+						default:
+							health -= 0.05 * healthLoss;
+						case mariosong:
+							if(daNote.noteType != 'Coin')
+							{
+								health -= 1;
+							}
+					}
 				}
 			});
 			for (daNote in unspawnNotes) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					health -= 0.05 * healthLoss;
+					switch(SONG.song)
+					{
+						default:
+							health -= 0.05 * healthLoss;
+						case mariosong:
+							if(daNote.noteType != 'Coin')
+							{
+								health -= 1;
+							}
+					}
 				}
 			}
 
@@ -3731,8 +3781,13 @@ class PlayState extends MusicBeatState
 			}
 		});
 		combo = 0;
-
-		health -= daNote.missHealth * healthLoss;
+		switch(SONG.song)
+		{
+			default:
+				health -= daNote.missHealth * healthLoss;
+			case mariosong:
+				health -= 1;
+		}
 		if(instakillOnMiss)
 		{
 			vocals.volume = 0;
@@ -3769,7 +3824,13 @@ class PlayState extends MusicBeatState
 	{
 		if (!boyfriend.stunned)
 		{
-			health -= 0.05 * healthLoss;
+			switch(SONG.song)
+			{
+				default:
+					health -= 0.05 * healthLoss;
+				case mariosong:
+					health -= 1;
+			}
 			if(instakillOnMiss)
 			{
 				vocals.volume = 0;
@@ -3904,7 +3965,16 @@ class PlayState extends MusicBeatState
 				popUpScore(note);
 				if(combo > 9999) combo = 9999;
 			}
-			health += note.hitHealth * healthGain;
+			switch(SONG.song)
+			{
+				default:
+					health += note.hitHealth * healthGain;
+				case mariosong:
+					if(note.noteType == 'Coin')
+					{
+						health += note.hitHealth;
+					}
+			}
 
 			if(!note.noAnimation) {
 				var daAlt = '';

@@ -82,6 +82,8 @@ class Note extends FlxSprite
 
 	public var hitsoundDisabled:Bool = false;
 
+	public var addstuff = 0;
+
 	private function set_texture(value:String):String {
 		if(texture != value) {
 			reloadNote('', value);
@@ -115,6 +117,27 @@ class Note extends FlxSprite
 					noAnimation = true;
 				case 'GF Sing':
 					gfNote = true;
+				case 'Coin':
+					reloadNote('', 'coin note');
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					ignoreNote = true;
+					if (FlxG.random.bool(1))
+					{
+						color = 0xFF4E56AD;
+						hitHealth = 6;
+					}
+					else if (FlxG.random.bool(10))
+					{
+						color = 0xFFB51400;
+						hitHealth = 2;
+					}
+					else
+					{
+						color = 0xFFA59F00;
+						hitHealth = 1;
+					}
 			}
 			noteType = value;
 		}
