@@ -84,6 +84,8 @@ class Note extends FlxSprite
 
 	public var addstuff = 0;
 
+	public var thecoinstuff = 0;
+
 	private function set_texture(value:String):String {
 		if(texture != value) {
 			reloadNote('', value);
@@ -123,20 +125,23 @@ class Note extends FlxSprite
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
 					ignoreNote = true;
-					if (FlxG.random.bool(1))
+					if (FlxG.random.bool(0.5))
 					{
 						color = 0xFF4E56AD;
-						hitHealth = 6;
+						hitHealth = 5;
+						thecoinstuff = 2;
 					}
 					else if (FlxG.random.bool(10))
 					{
 						color = 0xFFB51400;
 						hitHealth = 2;
+						thecoinstuff = 1;
 					}
 					else
 					{
 						color = 0xFFA59F00;
 						hitHealth = 1;
+						thecoinstuff = 0;
 					}
 			}
 			noteType = value;

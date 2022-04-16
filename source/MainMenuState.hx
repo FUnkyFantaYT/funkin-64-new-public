@@ -35,7 +35,8 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var debugKeys:Array<FlxKey>;
-	var debugstuff = true;
+	public var debugstuff = true;//self explanitory (sorry for bad english)
+	public var demo = true;//lazyness here we come
 
 	override function create()
 	{
@@ -176,19 +177,19 @@ class MainMenuState extends MusicBeatState
 				PlayState.storyDifficulty = 1;
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
-			else if (FlxG.keys.justPressed.ONE)
+			else if (FlxG.keys.justPressed.ONE && CoolUtil.debugstuff)
 			{
 				MusicBeatState.switchState(new StoryMenuState());
 			}
-			else if (FlxG.keys.justPressed.TWO)
+			else if (FlxG.keys.justPressed.TWO && CoolUtil.debugstuff)
 			{
 				MusicBeatState.switchState(new FreeplayState());
 			}
-			else if (FlxG.keys.justPressed.THREE)
+			else if (FlxG.keys.justPressed.THREE && CoolUtil.debugstuff)
 			{
 				MusicBeatState.switchState(new CreditsState());
 			}
-			else if (FlxG.keys.justPressed.FOUR)
+			else if (FlxG.keys.justPressed.FOUR && CoolUtil.debugstuff)
 			{
 				MusicBeatState.switchState(new options.OptionsState());
 			}

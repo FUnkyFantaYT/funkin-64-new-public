@@ -27,6 +27,8 @@ class StrumNote extends FlxSprite
 	}
 
 	public function new(x:Float, y:Float, leData:Int, player:Int) {
+		x -= 100;
+		y -= 30;
 		colorSwap = new ColorSwap();
 		shader = colorSwap.shader;
 		noteData = leData;
@@ -122,7 +124,7 @@ class StrumNote extends FlxSprite
 	public function postAddedToGroup() {
 		playAnim('static');
 		x += Note.swagWidth * noteData;
-		x += 50;
+		x += 65;
 		x += ((FlxG.width / 2) * player);
 		ID = noteData;
 	}

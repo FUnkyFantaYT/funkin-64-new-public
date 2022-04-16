@@ -1007,7 +1007,6 @@ class PlayState extends MusicBeatState
 		healthBarBG.y = FlxG.height * 0.89;
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
-		healthBarBG.visible = !ClientPrefs.hideHud;
 		healthBarBG.xAdd = -4;
 		healthBarBG.yAdd = -4;
 		add(healthBarBG);
@@ -1018,27 +1017,32 @@ class PlayState extends MusicBeatState
 		healthBar.scrollFactor.set();
 		// healthBar
 		healthBar.visible = !ClientPrefs.hideHud;
-		healthBar.alpha = ClientPrefs.healthBarAlpha;
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
 
-		if(SONG.song == mariosong)
+		switch(SONG.song)
 		{
-			health = 7;
-			mariohealth.frames = Paths.getSparrowAtlas('mario health');
-			mariohealth.animation.addByPrefix('0', 'health8.png', 24);
-			mariohealth.animation.addByPrefix('1', 'health7.png', 24);
-			mariohealth.animation.addByPrefix('2', 'health6.png', 24);
-			mariohealth.animation.addByPrefix('3', 'health5.png', 24);
-			mariohealth.animation.addByPrefix('4', 'health4.png', 24);
-			mariohealth.animation.addByPrefix('5', 'health3.png', 24);
-			mariohealth.animation.addByPrefix('6', 'health2.png', 24);
-			mariohealth.animation.addByPrefix('7', 'health1.png', 24);
-			mariohealth.animation.play('7');
-			mariohealth.scale.set(7.5, 7.5);
-			mariohealth.y = FlxG.height - mariohealth.height - 5;
-			mariohealth.screenCenter(X);
-			add(mariohealth);
+			default:
+				healthBarBG.visible = !ClientPrefs.hideHud;
+				healthBar.alpha = ClientPrefs.healthBarAlpha;
+			case mariosong:
+				healthBarBG.visible = false;
+				healthBar.alpha = 0;
+				health = 7;
+				mariohealth.frames = Paths.getSparrowAtlas('mario health');
+				mariohealth.animation.addByPrefix('0', 'health8.png', 24);
+				mariohealth.animation.addByPrefix('1', 'health7.png', 24);
+				mariohealth.animation.addByPrefix('2', 'health6.png', 24);
+				mariohealth.animation.addByPrefix('3', 'health5.png', 24);
+				mariohealth.animation.addByPrefix('4', 'health4.png', 24);
+				mariohealth.animation.addByPrefix('5', 'health3.png', 24);
+				mariohealth.animation.addByPrefix('6', 'health2.png', 24);
+				mariohealth.animation.addByPrefix('7', 'health1.png', 24);
+				mariohealth.animation.play('7');
+				mariohealth.scale.set(4, 4);
+				mariohealth.y = 80;
+				mariohealth.x = (FlxG.width / 2) - mariohealth.width - 110;
+				add(mariohealth);
 		}
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
@@ -1061,6 +1065,14 @@ class PlayState extends MusicBeatState
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
 
+		if(SONG.song == mariosong)
+		{
+			scoreTxt.visible = false;
+			timeBar.visible = false;
+			timeBarBG.visible = false;
+			timeTxt.visible = false;
+		}
+
 		botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "BOTPLAY", 32);
 		botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayTxt.scrollFactor.set();
@@ -1076,6 +1088,10 @@ class PlayState extends MusicBeatState
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
+		if(SONG.song == mariosong)
+		{
+			mariohealth.cameras = [camHUD];
+		}
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
@@ -1673,9 +1689,7 @@ class PlayState extends MusicBeatState
 				notes.forEachAlive(function(note:Note) {
 					note.copyAlpha = false;
 					note.alpha = note.multAlpha;
-					if(ClientPrefs.middleScroll && !note.mustPress) {
-						note.alpha *= 0.5;
-					}
+					if (!note.mustPress) note.alpha = 0; else note.alpha = 1;
 				});
 				callOnLuas('onCountdownTick', [swagCounter]);
 
@@ -2013,7 +2027,7 @@ class PlayState extends MusicBeatState
 		{
 			// FlxG.log.add(i);
 			var targetAlpha:Float = 1;
-			if (player < 1 && ClientPrefs.middleScroll) targetAlpha = 0.35;
+			if (player < 1) targetAlpha = 0;
 
 			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, strumLine.y, i, player);
 			babyArrow.downScroll = ClientPrefs.downScroll;
@@ -2021,7 +2035,7 @@ class PlayState extends MusicBeatState
 			{
 				//babyArrow.y -= 10;
 				babyArrow.alpha = 0;
-				FlxTween.tween(babyArrow, {/*y: babyArrow.y + 10,*/ alpha: targetAlpha}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+				FlxTween.tween(babyArrow, {/*y: babyArrow.y + 10,*/ alpha: if (player < 1) babyArrow.alpha = 0 else babyArrow.alpha = 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
 			}
 			else
 			{
@@ -2369,7 +2383,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (FlxG.keys.anyJustPressed(debugKeysChart) && !endingSong && !inCutscene)
+		if (FlxG.keys.anyJustPressed(debugKeysChart) && !endingSong && !inCutscene && CoolUtil.debugstuff)
 		{
 			openChartEditor();
 		}
@@ -2400,7 +2414,7 @@ class PlayState extends MusicBeatState
 				iconP1.x = -500;
 				iconP2.x = -500;
 				mariohealth.animation.play(health + '');
-				mariohealth.screenCenter(X);
+				
 		}
 
 		if (healthBar.percent < 20)
@@ -2413,7 +2427,7 @@ class PlayState extends MusicBeatState
 		else
 			iconP2.animation.curAnim.curFrame = 0;
 
-		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
+		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene && CoolUtil.debugstuff) {
 			persistentUpdate = false;
 			paused = true;
 			cancelMusicFadeTween();
@@ -3334,7 +3348,11 @@ class PlayState extends MusicBeatState
 				if(FlxTransitionableState.skipNextTransIn) {
 					CustomFadeTransition.nextCamera = null;
 				}
-				MusicBeatState.switchState(new FreeplayState());
+				if (CoolUtil.demo) {
+					MusicBeatState.switchState(new TitleState());
+				} else {
+					MusicBeatState.switchState(new MainMenuState());
+				}
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				changedDifficulty = false;
 			}
@@ -3928,7 +3946,19 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
-			if (ClientPrefs.hitsoundVolume > 0 && !note.hitsoundDisabled)
+			if(note.noteType == 'Coin')
+			{
+				switch(note.thecoinstuff)
+				{
+					case 0:
+						FlxG.sound.play(Paths.sound('coin'), 1);
+					case 1:
+						FlxG.sound.play(Paths.sound('redcoin'), 1);
+					case 2:
+						FlxG.sound.play(Paths.sound('bluecoin'), 1);
+				}
+			}
+			else if (ClientPrefs.hitsoundVolume > 0 && !note.hitsoundDisabled)
 			{
 				FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.hitsoundVolume);
 			}
@@ -4328,7 +4358,6 @@ class PlayState extends MusicBeatState
 		if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.camZooms && curBeat % 4 == 0)
 		{
 			FlxG.camera.zoom += 0.015;
-			camHUD.zoom += 0.03;
 		}
 
 		iconP1.scale.set(1.2, 1.2);

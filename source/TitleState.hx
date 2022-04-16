@@ -145,7 +145,7 @@ class TitleState extends MusicBeatState
 		swagShader = new ColorSwap();
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkin64', 'info');
 		
 		ClientPrefs.loadPrefs();
 		
@@ -190,26 +190,29 @@ class TitleState extends MusicBeatState
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
 		#else
-		if(FlxG.save.data.flashing == null && !FlashingState.leftState) {
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			MusicBeatState.switchState(new FlashingState());
-		} else {
-			#if desktop
-			if (!DiscordClient.isInitialized)
-			{
-				DiscordClient.initialize();
-				Application.current.onExit.add (function (exitCode) {
-					DiscordClient.shutdown();
-				});
-			}
-			#end
-
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
-				startIntro();
+		#if desktop
+		if (!DiscordClient.isInitialized)
+		{
+			DiscordClient.initialize();
+			Application.current.onExit.add (function (exitCode) {
+				DiscordClient.shutdown();
 			});
 		}
+		#end
+		new FlxTimer().start(1, function(tmr:FlxTimer)
+		{
+			if (!initialized) {
+				var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
+				bg.scrollFactor.set();
+				add(bg);
+				(new FlxVideo('assets/videos/intro.' + Paths.VIDEO_EXT)).finishCallback = function() {
+					remove(bg);
+					startIntro();
+				}
+			} else {
+				startIntro();
+			}
+		});
 		#end
 	}
 
@@ -221,32 +224,12 @@ class TitleState extends MusicBeatState
 
 	function startIntro()
 	{
-		if (!initialized)
+		if (!initialized && FlxG.sound.music == null)
 		{
-			/*var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
-			diamond.persist = true;
-			diamond.destroyOnNoUse = false;
-
-			FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
-				new FlxRect(-300, -300, FlxG.width * 1.8, FlxG.height * 1.8));
-			FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
-				{asset: diamond, width: 32, height: 32}, new FlxRect(-300, -300, FlxG.width * 1.8, FlxG.height * 1.8));
-				
-			transIn = FlxTransitionableState.defaultTransIn;
-			transOut = FlxTransitionableState.defaultTransOut;*/
-
-			// HAD TO MODIFY SOME BACKEND SHIT
-			// IF THIS PR IS HERE IF ITS ACCEPTED UR GOOD TO GO
-			// https://github.com/HaxeFlixel/flixel-addons/pull/348
-
-			// var music:FlxSound = new FlxSound();
-			// music.loadStream(Paths.music('freakyMenu'));
-			// FlxG.sound.list.add(music);
-			// music.play();
-
-			if(FlxG.sound.music == null) {
-				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+			if(CoolUtil.demo) {
+				FlxG.sound.music.fadeIn(4, 0, 0);
+			} else {
 				FlxG.sound.music.fadeIn(4, 0, 0.7);
 			}
 		}
@@ -374,7 +357,14 @@ class TitleState extends MusicBeatState
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
-		if (initialized)
+		if (CoolUtil.demo) {
+		Conductor.changeBPM(titleJSON.bpm);
+		PlayState.SONG = Song.loadFromJson('mario-64', 'mario-64');
+		PlayState.isStoryMode = false;
+		PlayState.storyDifficulty = 1;
+		LoadingState.loadAndSwitchState(new PlayState());
+		}
+		else if (initialized)
 			skipIntro();
 		else
 			initialized = true;
@@ -447,11 +437,7 @@ class TitleState extends MusicBeatState
 
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
-					if (mustUpdate) {
-						MusicBeatState.switchState(new OutdatedState());
-					} else {
-						MusicBeatState.switchState(new MainMenuState());
-					}
+					MusicBeatState.switchState(new MainMenuState());
 					closedState = true;
 				});
 				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
@@ -557,83 +543,66 @@ class TitleState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+		if (!CoolUtil.demo) {
+			if(logoBl != null) 
+				logoBl.animation.play('bump', true);
 
-		if(logoBl != null) 
-			logoBl.animation.play('bump', true);
+			if(gfDance != null) {
+				danceLeft = !danceLeft;
+				if (danceLeft)
+					gfDance.animation.play('danceRight');
+				else
+					gfDance.animation.play('danceLeft');
+			}
 
-		if(gfDance != null) {
-			danceLeft = !danceLeft;
-			if (danceLeft)
-				gfDance.animation.play('danceRight');
-			else
-				gfDance.animation.play('danceLeft');
-		}
+			if(!closedState) {
+				sickBeats++;
+				switch (sickBeats)
+				{
+					case 1:
+						createCoolText(['The White Ninja', 'hNation', 'Cally Cobble', 'gmm', 'Sir Chapurato']);
+					// credTextShit.visible = true;
+					case 3:
+						addMoreText('Present');
+					// credTextShit.text += '\npresent...';
+					// credTextShit.addText();
+					case 4:
+						deleteCoolText();
+					// credTextShit.visible = false;
+					// credTextShit.text = 'In association \nwith';
+					// credTextShit.screenCenter();
+					case 5:
+						createCoolText(['Made Possible', 'With'], -40);
+					case 7:
+						addMoreText('Funkin Amazing', -40);
+					// credTextShit.text += '\nNewgrounds';
+					case 8:
+						deleteCoolText();
+					// credTextShit.visible = false;
 
-		if(!closedState) {
-			sickBeats++;
-			switch (sickBeats)
-			{
-				case 1:
-					#if PSYCH_WATERMARKS
-					createCoolText(['Psych Engine by'], 15);
-					#else
-					createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-					#end
-				// credTextShit.visible = true;
-				case 3:
-					#if PSYCH_WATERMARKS
-					addMoreText('Shadow Mario', 15);
-					addMoreText('RiverOaken', 15);
-					addMoreText('shubs', 15);
-					#else
-					addMoreText('present');
-					#end
-				// credTextShit.text += '\npresent...';
-				// credTextShit.addText();
-				case 4:
-					deleteCoolText();
-				// credTextShit.visible = false;
-				// credTextShit.text = 'In association \nwith';
-				// credTextShit.screenCenter();
-				case 5:
-					#if PSYCH_WATERMARKS
-					createCoolText(['Not associated', 'with'], -40);
-					#else
-					createCoolText(['In association', 'with'], -40);
-					#end
-				case 7:
-					addMoreText('newgrounds', -40);
-					ngSpr.visible = true;
-				// credTextShit.text += '\nNewgrounds';
-				case 8:
-					deleteCoolText();
-					ngSpr.visible = false;
-				// credTextShit.visible = false;
+					// credTextShit.text = 'Shoutouts Tom Fulp';
+					// credTextShit.screenCenter();
+					case 9:
+						createCoolText([curWacky[0]]);
+					// credTextShit.visible = true;
+					case 11:
+						addMoreText(curWacky[1]);
+					// credTextShit.text += '\nlmao';
+					case 13:
+						deleteCoolText();
+					// credTextShit.visible = false;
+					// credTextShit.text = "Friday";
+					// credTextShit.screenCenter();
+					case 14:
+						addMoreText('Funkin');
+					// credTextShit.visible = true;
+					case 15:
+						addMoreText('64');
+					// credTextShit.text += '\nNight';
 
-				// credTextShit.text = 'Shoutouts Tom Fulp';
-				// credTextShit.screenCenter();
-				case 9:
-					createCoolText([curWacky[0]]);
-				// credTextShit.visible = true;
-				case 11:
-					addMoreText(curWacky[1]);
-				// credTextShit.text += '\nlmao';
-				case 12:
-					deleteCoolText();
-				// credTextShit.visible = false;
-				// credTextShit.text = "Friday";
-				// credTextShit.screenCenter();
-				case 13:
-					addMoreText('Friday');
-				// credTextShit.visible = true;
-				case 14:
-					addMoreText('Night');
-				// credTextShit.text += '\nNight';
-				case 15:
-					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
-
-				case 16:
-					skipIntro();
+					case 16:
+						skipIntro();
+				}
 			}
 		}
 	}
