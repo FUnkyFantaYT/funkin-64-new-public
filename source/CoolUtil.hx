@@ -25,7 +25,7 @@ class CoolUtil
 
 	public static var difficulties:Array<String> = [];
 
-	public static var debugstuff = true;//self explanitory (sorry for bad english)
+	public static var debugstuff = false;//self explanitory (sorry for bad english)
 	public static var demo = true;//lazyness here we come
 
 	public static function getDifficultyFilePath(num:Null<Int> = null)

@@ -2698,7 +2698,14 @@ class PlayState extends MusicBeatState
 				for (timer in modchartTimers) {
 					timer.active = true;
 				}
-				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x - boyfriend.positionArray[0], boyfriend.getScreenPosition().y - boyfriend.positionArray[1], camFollowPos.x, camFollowPos.y));
+				if(CoolUtil.demo)
+				{
+					openSubState(new DemoStuff(true));
+				}
+				else
+				{
+					openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x - boyfriend.positionArray[0], boyfriend.getScreenPosition().y - boyfriend.positionArray[1], camFollowPos.x, camFollowPos.y));
+				}
 
 				// MusicBeatState.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				
@@ -3190,15 +3197,17 @@ class PlayState extends MusicBeatState
 		if(!startingSong) {
 			notes.forEach(function(daNote:Note) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					switch(SONG.song)
+					if(SONG.song == mariosong && daNote.noteType != 'Coin')
 					{
-						default:
-							health -= 0.05 * healthLoss;
-						case mariosong:
-							if(daNote.noteType != 'Coin')
-							{
-								health -= 1;
-							}
+						health -= 1;
+					}
+					else
+					{
+						switch(SONG.song)
+						{
+							default:
+								health -= 0.05 * healthLoss;
+						}
 					}
 				}
 			});
@@ -3286,7 +3295,14 @@ class PlayState extends MusicBeatState
 					if(FlxTransitionableState.skipNextTransIn) {
 						CustomFadeTransition.nextCamera = null;
 					}
-					MusicBeatState.switchState(new StoryMenuState());
+					if(CoolUtil.demo)
+					{
+						openSubState(new DemoStuff(false));
+					}
+					else
+					{
+						MusicBeatState.switchState(new StoryMenuState());
+					}
 
 					// if ()
 					if(!ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false)) {
@@ -3348,9 +3364,12 @@ class PlayState extends MusicBeatState
 				if(FlxTransitionableState.skipNextTransIn) {
 					CustomFadeTransition.nextCamera = null;
 				}
-				if (CoolUtil.demo) {
-					MusicBeatState.switchState(new TitleState());
-				} else {
+				if (CoolUtil.demo)
+				{
+					openSubState(new DemoStuff(false));
+				}
+				else
+				{
 					MusicBeatState.switchState(new MainMenuState());
 				}
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));

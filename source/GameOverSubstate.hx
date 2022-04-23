@@ -48,13 +48,14 @@ class GameOverSubstate extends MusicBeatSubstate
 		PlayState.instance.setOnLuas('inGameOver', true);
 
 		Conductor.songPosition = 0;
-
-		boyfriend = new Boyfriend(x, y, characterName);
-		boyfriend.x += boyfriend.positionArray[0];
-		boyfriend.y += boyfriend.positionArray[1];
-		add(boyfriend);
-
-		camFollow = new FlxPoint(boyfriend.getGraphicMidpoint().x, boyfriend.getGraphicMidpoint().y);
+		if(!CoolUtil.demo)
+		{
+			boyfriend = new Boyfriend(x, y, characterName);
+			boyfriend.x += boyfriend.positionArray[0];
+			boyfriend.y += boyfriend.positionArray[1];
+			add(boyfriend);
+			camFollow = new FlxPoint(boyfriend.getGraphicMidpoint().x, boyfriend.getGraphicMidpoint().y);
+		}
 
 		FlxG.sound.play(Paths.sound(deathSoundName));
 		Conductor.changeBPM(100);
@@ -62,14 +63,15 @@ class GameOverSubstate extends MusicBeatSubstate
 		// FlxG.camera.focusOn(FlxPoint.get(FlxG.width / 2, FlxG.height / 2));
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
-
-		boyfriend.playAnim('firstDeath');
+		if(!CoolUtil.demo) boyfriend.playAnim('firstDeath');
 
 		var exclude:Array<Int> = [];
 
 		camFollowPos = new FlxObject(0, 0, 1, 1);
 		camFollowPos.setPosition(FlxG.camera.scroll.x + (FlxG.camera.width / 2), FlxG.camera.scroll.y + (FlxG.camera.height / 2));
 		add(camFollowPos);
+
+		endBullshit();
 	}
 
 	var isFollowingAlready:Bool = false;
@@ -102,20 +104,22 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			PlayState.instance.callOnLuas('onGameOverConfirm', [false]);
 		}
-
-		if (boyfriend.animation.curAnim.name == 'firstDeath')
+		if(!CoolUtil.demo)
 		{
-			if(boyfriend.animation.curAnim.curFrame >= 12 && !isFollowingAlready)
+			if (boyfriend.animation.curAnim.name == 'firstDeath')
 			{
-				FlxG.camera.follow(camFollowPos, LOCKON, 1);
-				updateCamera = true;
-				isFollowingAlready = true;
-			}
-
-			if (boyfriend.animation.curAnim.finished)
-			{
-				coolStartDeath();
-				boyfriend.startedDeath = true;
+				if(boyfriend.animation.curAnim.curFrame >= 12 && !isFollowingAlready)
+				{
+					FlxG.camera.follow(camFollowPos, LOCKON, 1);
+					updateCamera = true;
+					isFollowingAlready = true;
+				}
+		
+				if (boyfriend.animation.curAnim.finished)
+				{
+					coolStartDeath();
+					boyfriend.startedDeath = true;
+				}
 			}
 		}
 
@@ -145,7 +149,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (!isEnding)
 		{
 			isEnding = true;
-			boyfriend.playAnim('deathConfirm', true);
+			if(!CoolUtil.demo)
+			{
+				boyfriend.playAnim('deathConfirm', true);
+			}
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music(endSoundName));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)

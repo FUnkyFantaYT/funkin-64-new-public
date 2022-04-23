@@ -35,8 +35,6 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var debugKeys:Array<FlxKey>;
-	public var debugstuff = true;//self explanitory (sorry for bad english)
-	public var demo = true;//lazyness here we come
 
 	override function create()
 	{
