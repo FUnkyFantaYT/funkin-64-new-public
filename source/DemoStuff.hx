@@ -27,12 +27,12 @@ class DemoStuff extends MusicBeatSubstate
 	{
 		super.create();
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var bg:FlxSprite = new FlxSprite().makeGraphic(960, 720, FlxColor.BLACK);
 		add(bg);
 
         if(aretheydead)
         {
-            warnText = new FlxText(0, 0, FlxG.width,
+            warnText = new FlxText(0, 0, 960 * 2,
                 "lmao did you just die\n
                 press enter to restart\n
                 press esc to go the credits",
@@ -40,7 +40,7 @@ class DemoStuff extends MusicBeatSubstate
         }
         else
         {
-            warnText = new FlxText(0, 0, FlxG.width,
+            warnText = new FlxText(0, 0, 960 * 2,
                 "hey\n
                 thanks for playing this mod and im\n
                 here to tell you that there is more\n
@@ -51,7 +51,6 @@ class DemoStuff extends MusicBeatSubstate
                 32);
         }
 		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
-		warnText.screenCenter();
 		add(warnText);
 	}
 

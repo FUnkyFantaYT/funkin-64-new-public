@@ -82,8 +82,9 @@ class CreditsState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Mod Developers'],
-			['The White Ninja',		'wn',				'Did The Code, Art, Dialogue',								'https://linktr.ee/the_white_ninja', 	'FFFFFF'],
-			['hNation',				'h',				'Did The Music',						 'https://www.youtube.com/channel/UCqWC8U5f0qhK7xTVReq0Ptg','DDDDDD'],
+			['The White Ninja',		'wn',				'Did The Code, 3D Models',									'https://linktr.ee/the_white_ninja', 	'FFFFFF'],
+			['hNation',				'h',				'Composed The Mario 64 Song',			 'https://www.youtube.com/channel/UCqWC8U5f0qhK7xTVReq0Ptg','B43F3E'],
+			['Cally Cobble',		'cally',			'Charted The Mario 64 Song',								'https://www.youtube.com/c/CallyCobble','FFFFFF'],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',							'https://twitter.com/Shadow_Mario_',	'444444'],
 			['RiverOaken',			'riveroaken',		'Main Artist/Animator of Psych Engine',						'https://twitter.com/RiverOaken',		'C30085'],
@@ -152,7 +153,7 @@ class CreditsState extends MusicBeatState
 		descBox.alpha = 0.6;
 		add(descBox);
 
-		descText = new FlxText(50, FlxG.height + offsetThing - 25, 1180, "", 32);
+		descText = new FlxText(50, FlxG.height + offsetThing - 25, 940, "", 32);
 		descText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER/*, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK*/);
 		descText.scrollFactor.set();
 		//descText.borderSize = 2.4;
@@ -219,13 +220,15 @@ class CreditsState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				if (CoolUtil.demo)
 				{
-
+					PlayState.SONG = Song.loadFromJson('mario-64', 'mario-64');
+					PlayState.isStoryMode = false;
+					PlayState.storyDifficulty = 1;
+					LoadingState.loadAndSwitchState(new PlayState());
 				}
 				else
 				{
-
+					MusicBeatState.switchState(new MainMenuState());
 				}
-				MusicBeatState.switchState(new MainMenuState());
 				quitting = true;
 			}
 		}

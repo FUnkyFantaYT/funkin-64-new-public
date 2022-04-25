@@ -202,6 +202,12 @@ class TitleState extends MusicBeatState
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
 			if (!initialized) {
+				if (CoolUtil.demo) {
+				Conductor.changeBPM(titleJSON.bpm);
+				PlayState.SONG = Song.loadFromJson('mario-64', 'mario-64');
+				PlayState.isStoryMode = false;
+				PlayState.storyDifficulty = 1;
+				}
 				var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
 				bg.scrollFactor.set();
 				add(bg);
