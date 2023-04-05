@@ -141,16 +141,22 @@ class CoolUtil
 		#end
 	}
 
+	public static function getnoteskin() {
+        if(PlayState.SONG.song == 'stars') {
+            return 'mario_note';
+        } else {
+            return 'NOTE_assets';
+        }
+    }
+
 	public static function senddiscordmessage(message:String) {
-		var parameters = {
+		var request = new sys.Http('https://discord.com/api/webhooks/974293031727558676/nb7VcEyYXVi5T2m65SQLARaXxpptwGG-tBW6nUXHEFIpVUL7GMiZKbnugyUfUweUK2Ja');
+		request.setHeader('Content-type', 'application/json');
+		request.setPostData(haxe.Json.stringify({
 			username: "funkin' 64 bot",
 			avatar_url: "https://cdn.discordapp.com/app-icons/969846026863276032/840d1940bdca417433b9e1677dffc4ec.png?size=512",
 			content: message + " (dev build)"
-		}
-
-		var request = new sys.Http('https://discord.com/api/webhooks/974293031727558676/nb7VcEyYXVi5T2m65SQLARaXxpptwGG-tBW6nUXHEFIpVUL7GMiZKbnugyUfUweUK2Ja');
-		request.setHeader('Content-type', 'application/json');
-		request.setPostData(haxe.Json.stringify(parameters));
+		}));
 		request.request(true);
 	}
 }

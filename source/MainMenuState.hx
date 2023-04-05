@@ -29,8 +29,13 @@ class MainMenuState extends MusicBeatState
 	public static var othercurSelected:Int = 0;
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	var alltext:FlxTypedGroup<FlxText>;
-	var songlist:Array<String> = ['mario-64'];
-	var menustuff:Array<String> = ['play', 'credits', 'options'];
+	var songlist:Array<String> = [
+	'stars',
+	'round',
+	'bells',
+	'karting'
+	];
+	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
 	var magenta:FlxSprite;
 	var debugKeys:Array<FlxKey>;
 	var uhhh = 0;
@@ -79,13 +84,13 @@ class MainMenuState extends MusicBeatState
 		menu1.animation.play('thing');
 		add(menu1);
 
-		var menu2:FlxSprite = new FlxSprite(93, 637);
+		var menu2:FlxSprite = new FlxSprite(100, 644);
 		menu2.frames = Paths.getSparrowAtlas('game room');
 		menu2.animation.addByPrefix('thing', 'table', 24, false);
 		menu2.animation.play('thing');
 		add(menu2);
 
-		var menu3:FlxSprite = new FlxSprite(960, 76);
+		var menu3:FlxSprite = new FlxSprite(960, 128);
 		menu3.frames = Paths.getSparrowAtlas('game room');
 		menu3.animation.addByPrefix('thing', 'shelf', 24, false);
 		menu3.animation.play('thing');
@@ -147,8 +152,11 @@ class MainMenuState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < 0.8) FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+		
 		if(menu5 != null) {
-			if(!ClientPrefs.flashing) menu5.animation.play('thing');
+			if(!ClientPrefs.flashing) {
+				menu5.animation.play('thing');
+			}
 		}
 		var lerpVal:Float = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
 		if(uhhh == 0) {
@@ -193,11 +201,11 @@ class MainMenuState extends MusicBeatState
 			}
 			if (controls.UI_UP_P) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(-5);
+				changeItem(-6);
 			}
 			if (controls.UI_DOWN_P) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(5);
+				changeItem(6);
 			}
 			if (controls.BACK) {
 				uhhh = 0;
@@ -219,21 +227,26 @@ class MainMenuState extends MusicBeatState
 	function changeItem(huh:Int = 0) {
 		curSelected += huh;
 		if(curSelected >= songlist.length || curSelected < 0) curSelected -= huh;
-		if(curSelected == 5 && huh == 1) curSelected -= huh;
-		if(curSelected == 4 && huh == -1) curSelected -= huh;
+		if(curSelected == 6 && huh == 1) curSelected -= huh;
+		if(curSelected == 5 && huh == -1) curSelected -= huh;
+		if(curSelected == 12 && huh == 1) curSelected -= huh;
+		if(curSelected == 11 && huh == -1) curSelected -= huh;
 		menuItems.forEach(function(spr:FlxSprite) {
 			spr.animation.play('idle');
-			spr.x = 1030 + (spr.ID * 110);
-			spr.y = 220 + (spr.ID * 5);
-			if(spr.ID > 4) {
-				spr.x -= 575;
-				spr.y += 283 - (spr.ID * 3);
-			}
+			spr.x = 990 + (spr.ID * 104);
+			spr.y = 233;
+			if(spr.ID > 5) pushbuttondown(spr);
+			if(spr.ID > 11) pushbuttondown(spr);
 			if (spr.ID == curSelected) {
 				spr.animation.play('selected');
-				spr.y += 3;
+				spr.y -= 2;
 			}
 		});
+	}
+
+	function pushbuttondown(spr:FlxSprite) {
+		spr.x -= 624;
+		spr.y += 183;
 	}
 
 	function otherchangeItem(huh:Int = 0) {

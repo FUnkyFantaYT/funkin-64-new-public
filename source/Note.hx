@@ -125,20 +125,15 @@ class Note extends FlxSprite
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
 					ignoreNote = true;
-					if (FlxG.random.bool(0.5))
-					{
+					if (FlxG.random.bool(0.5)) {
 						color = 0xFF4E56AD;
 						hitHealth = 5;
 						thecoinstuff = 2;
-					}
-					else if (FlxG.random.bool(10))
-					{
+					} else if (FlxG.random.bool(10)) {
 						color = 0xFFB51400;
 						hitHealth = 2;
 						thecoinstuff = 1;
-					}
-					else
-					{
+					} else {
 						color = 0xFFA59F00;
 						hitHealth = 1;
 						thecoinstuff = 0;
@@ -275,7 +270,7 @@ class Note extends FlxSprite
 		if(texture.length < 1) {
 			skin = PlayState.SONG.arrowSkin;
 			if(skin == null || skin.length < 1) {
-				skin = 'NOTE_assets';
+				skin = CoolUtil.getnoteskin();
 			}
 		}
 

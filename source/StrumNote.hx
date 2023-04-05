@@ -36,7 +36,7 @@ class StrumNote extends FlxSprite
 		this.noteData = leData;
 		super(x, y);
 
-		var skin:String = 'NOTE_assets';
+		var skin:String = CoolUtil.getnoteskin();
 		if(PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
 		texture = skin; //Load texture and anims
 
@@ -126,7 +126,13 @@ class StrumNote extends FlxSprite
 		x += Note.swagWidth * noteData;
 		x += 65;
 		x += ((FlxG.width / 2) * player);
-		if(ClientPrefs.middleScroll) x += 125;
+		if(ClientPrefs.middleScroll) {
+			if(PlayState.SONG.song == PlayState.mariosong) {
+				x += 125;
+			} else {
+				x += 70;
+			}
+		}
 		ID = noteData;
 	}
 

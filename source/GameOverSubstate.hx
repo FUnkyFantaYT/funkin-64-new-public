@@ -12,7 +12,6 @@ import flixel.tweens.FlxTween;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
-
 	var camFollow:FlxPoint;
 	var camFollowPos:FlxObject;
 	var updateCamera:Bool = false;
@@ -24,6 +23,9 @@ class GameOverSubstate extends MusicBeatSubstate
 	public static var endSoundName:String = 'gameOverEnd';
 	public static var instance:GameOverSubstate;
 
+	var video = false;
+	var exit = false;
+
 	public static function resetVariables() {
 		characterName = 'bf';
 		deathSoundName = 'fnf_loss_sfx';
@@ -33,61 +35,44 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	override function create() {
 		instance = this;
-		PlayState.instance.callOnLuas('onGameOverStart', []);
-
 		super.create();
 	}
 
 	public function new(x:Float, y:Float, camX:Float, camY:Float) {
 		super();
-
-		PlayState.instance.setOnLuas('inGameOver', true);
 		Conductor.songPosition = 0;
-
-		if(!CoolUtil.demo) {
-			new FlxTimer().start(1, function(tmr:FlxTimer) {
-				switch(PlayState.SONG.song) {
-					case 'mario-64':
-						playvideo('mariodead');
-				}
-			});
+		if(PlayState.deathCounter == 3) PlayState.SONG = Song.loadFromJson(PlayState.SONG.song + '-easy', PlayState.SONG.song);
+		if(PlayState.SONG.song == PlayState.mariosong) {
+			playvideo('mariodead');
+		} else {
+			MusicBeatState.resetState();
 		}
-
 		CoolUtil.senddiscordmessage('someone has died in ' + PlayState.SONG.song);
 		Conductor.changeBPM(100);
-		FlxG.camera.scroll.set();
-		FlxG.camera.target = null;
-		var exclude:Array<Int> = [];
-		camFollowPos = new FlxObject(0, 0, 1, 1);
-		camFollowPos.setPosition(FlxG.camera.scroll.x + (FlxG.camera.width / 2), FlxG.camera.scroll.y + (FlxG.camera.height / 2));
-		add(camFollowPos);
 	}
 
 	var isFollowingAlready:Bool = false;
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
-		PlayState.instance.callOnLuas('onUpdate', [elapsed]);
-
 		if(updateCamera) {
 			var lerpVal:Float = CoolUtil.boundTo(elapsed * 0.6, 0, 1);
 			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
 		}
-
-		if (controls.ACCEPT) endBullshit();
-
-		if (controls.BACK) {
-			FlxG.sound.music.stop();
-			PlayState.deathCounter = 0;
-			PlayState.coincounter = 0;
-			PlayState.seenCutscene = false;
-			MusicBeatState.switchState(new MainMenuState());
-			PlayState.instance.callOnLuas('onGameOverConfirm', [false]);
+		if (controls.ACCEPT) {
+			if(video = false) {
+				endBullshit();
+			}
+			exit = false;
 		}
-
+		if (controls.BACK) {
+			if(video = false) {
+				exitstuff();
+			} else {
+				exit = true;
+			}
+		}
 		if (FlxG.sound.music.playing) Conductor.songPosition = FlxG.sound.music.time;
-
-		PlayState.instance.callOnLuas('onUpdatePost', [elapsed]);
 	}
 
 	override function beatHit() {
@@ -109,22 +94,33 @@ class GameOverSubstate extends MusicBeatSubstate
 					MusicBeatState.resetState();
 				});
 			});
-			PlayState.instance.callOnLuas('onGameOverConfirm', [true]);
 		}
 	}
 
 	function playvideo(name:String) {
+		video = true;
 		var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
 		bg.scrollFactor.set();
 		add(bg);
-		if(ClientPrefs.flashing) {
-			(new FlxVideo('assets/videos/' + name + 'noflash.mp4', -160)).finishCallback = function() {
+		var addstuff = '';
+		if(ClientPrefs.flashing) addstuff = 'noflash';
+		new FlxTimer().start(1, function(tmr:FlxTimer) {
+			(new FlxVideo('assets/videos/' + name + addstuff + '.mp4', -160)).finishCallback = function() {
 				remove(bg);
+				if(exit = true) {
+					exitstuff();
+				} else {
+					MusicBeatState.resetState();
+				}
 			}
-		} else {
-			(new FlxVideo('assets/videos/' + name + '.mp4', -160)).finishCallback = function() {
-				remove(bg);
-			}
-		}
+		});
+	}
+
+	function exitstuff() {
+		FlxG.sound.music.stop();
+		PlayState.deathCounter = 0;
+		PlayState.coincounter = 0;
+		PlayState.seenCutscene = false;
+		MusicBeatState.switchState(new MainMenuState());
 	}
 }

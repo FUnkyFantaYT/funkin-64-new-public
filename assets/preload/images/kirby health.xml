@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="kirby health.png">
+	<!-- Created with Adobe Animate version 21.0.0.35450 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="khb1.png instance 1" x="0" y="0" width="960" height="141"/>
+	<SubTexture name="khb2.png instance 1" x="970" y="0" width="960" height="141"/>
+	<SubTexture name="khb3.png instance 1" x="0" y="151" width="960" height="141"/>
+	<SubTexture name="khb4.png instance 1" x="970" y="151" width="960" height="141"/>
+	<SubTexture name="khb5.png instance 1" x="0" y="302" width="960" height="141"/>
+	<SubTexture name="khb6.png instance 1" x="970" y="302" width="960" height="141"/>
+	<SubTexture name="khb7.png instance 1" x="0" y="453" width="960" height="141"/>
+</TextureAtlas>

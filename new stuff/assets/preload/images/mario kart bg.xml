@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="mario kart bg.png">
+	<!-- Created with Adobe Animate version 21.0.0.35450 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="bg0000" x="0" y="0" width="1920" height="1080"/>
+	<SubTexture name="bg0001" x="1930" y="0" width="1920" height="1080"/>
+	<SubTexture name="bg0002" x="3860" y="0" width="1920" height="1080"/>
+	<SubTexture name="bg0003" x="5790" y="0" width="1920" height="1080"/>
+	<SubTexture name="bg0004" x="0" y="1090" width="1920" height="1080"/>
+	<SubTexture name="bg0005" x="1930" y="1090" width="1920" height="1080"/>
+	<SubTexture name="bg0006" x="3860" y="1090" width="1920" height="1080"/>
+</TextureAtlas>

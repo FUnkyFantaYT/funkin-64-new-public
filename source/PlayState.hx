@@ -227,8 +227,10 @@ class PlayState extends MusicBeatState
 	//psych erngine stuff ^ mod stuff v
 
 	var mariohealth:FlxSprite = new FlxSprite(0, 0);
-	public static var mariosong = 'mario-64';
+	public static var mariosong = 'stars';
 	public static var coincounter = 0;
+
+	var kirbyhealth:FlxSprite = new FlxSprite(0, 0);
 
 	override public function create()
 	{
@@ -772,31 +774,48 @@ class PlayState extends MusicBeatState
 		healthBar.visible = !ClientPrefs.hideHud;
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
-		switch(SONG.song) {
-			default:
-				healthBarBG.visible = !ClientPrefs.hideHud;
-				healthBar.alpha = ClientPrefs.healthBarAlpha;
-			case mariosong:
-				healthBarBG.visible = false;
-				healthBar.alpha = 0;
-				health = 7;
-				mariohealth.frames = Paths.getSparrowAtlas('mario health');
-				mariohealth.animation.addByPrefix('0', 'health8.png', 24);
-				mariohealth.animation.addByPrefix('1', 'health7.png', 24);
-				mariohealth.animation.addByPrefix('2', 'health6.png', 24);
-				mariohealth.animation.addByPrefix('3', 'health5.png', 24);
-				mariohealth.animation.addByPrefix('4', 'health4.png', 24);
-				mariohealth.animation.addByPrefix('5', 'health3.png', 24);
-				mariohealth.animation.addByPrefix('6', 'health2.png', 24);
-				mariohealth.animation.addByPrefix('7', 'health1.png', 24);
-				mariohealth.animation.play('7');
-				mariohealth.scale.set(4, 4);
-				mariohealth.y = 80;
-				if(ClientPrefs.middleScroll)
-					mariohealth.x = (FlxG.width / 2) - mariohealth.width - 300;
-				else
-					mariohealth.x = (FlxG.width / 2) - mariohealth.width - 110;
-				add(mariohealth);
+		if(SONG.song == mariosong) {
+			healthBarBG.visible = false;
+			healthBar.alpha = 0;
+			health = 7;
+			mariohealth.frames = Paths.getSparrowAtlas('mario health');
+			mariohealth.animation.addByPrefix('0', 'health8.png', 24);
+			mariohealth.animation.addByPrefix('1', 'health7.png', 24);
+			mariohealth.animation.addByPrefix('2', 'health6.png', 24);
+			mariohealth.animation.addByPrefix('3', 'health5.png', 24);
+			mariohealth.animation.addByPrefix('4', 'health4.png', 24);
+			mariohealth.animation.addByPrefix('5', 'health3.png', 24);
+			mariohealth.animation.addByPrefix('6', 'health2.png', 24);
+			mariohealth.animation.addByPrefix('7', 'health1.png', 24);
+			mariohealth.animation.play('7');
+			mariohealth.scale.set(4, 4);
+			mariohealth.y = 80;
+			if(ClientPrefs.middleScroll)
+				mariohealth.x = (FlxG.width / 2) - mariohealth.width - 300;
+			else
+				mariohealth.x = (FlxG.width / 2) - mariohealth.width - 110;
+			add(mariohealth);
+		} else if(SONG.song == 'round') {
+			health = 6;
+			kirbyhealth.frames = Paths.getSparrowAtlas('kirby health');
+			kirbyhealth.animation.addByPrefix('0', 'khb1.png', 24);
+			kirbyhealth.animation.addByPrefix('1', 'khb2.png', 24);
+			kirbyhealth.animation.addByPrefix('2', 'khb3.png', 24);
+			kirbyhealth.animation.addByPrefix('3', 'khb4.png', 24);
+			kirbyhealth.animation.addByPrefix('4', 'khb5.png', 24);
+			kirbyhealth.animation.addByPrefix('5', 'khb6.png', 24);
+			kirbyhealth.animation.addByPrefix('6', 'khb7.png', 24);
+			kirbyhealth.animation.play('6');
+			kirbyhealth.y = 579;
+			kirbyhealth.x = 0;
+			add(kirbyhealth);
+		} else {
+			remove(mariohealth);
+			remove(kirbyhealth);
+			healthBarBG.visible = !ClientPrefs.hideHud;
+			healthBar.alpha = ClientPrefs.healthBarAlpha;
+			add(healthBarBG);
+			add(healthBar);
 		}
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
@@ -815,11 +834,16 @@ class PlayState extends MusicBeatState
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
-		if(SONG.song == mariosong) {
+		if(SONG.song == mariosong || SONG.song == 'round') {
 			scoreTxt.visible = false;
 			timeBar.visible = false;
 			timeBarBG.visible = false;
 			timeTxt.visible = false;
+		} else {
+			scoreTxt.visible = true;
+			timeBar.visible = true;
+			timeBarBG.visible = true;
+			timeTxt.visible = true;
 		}
 		botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "BOTPLAY", 32);
 		botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -833,7 +857,14 @@ class PlayState extends MusicBeatState
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
-		if(SONG.song == mariosong) mariohealth.cameras = [camHUD];
+		if(SONG.song == mariosong) {
+			mariohealth.cameras = [camHUD];
+		} else if(SONG.song == 'round') {
+			kirbyhealth.cameras = [camHUD];
+		} else {
+			mariohealth.cameras != [camHUD];
+			kirbyhealth.cameras != [camHUD];
+		}
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
@@ -934,7 +965,7 @@ class PlayState extends MusicBeatState
 			CoolUtil.precacheMusic(Paths.formatToSongPath(ClientPrefs.pauseMusic));
 		}
 		#if desktop
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
+		DiscordClient.changePresence(detailsText, SONG.song, iconP2.getCharacter());
 		#end
 		if(!ClientPrefs.controllerMode) {
 			FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
@@ -943,6 +974,7 @@ class PlayState extends MusicBeatState
 		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
 		callOnLuas('onCreatePost', []);
 		CoolUtil.senddiscordmessage('someone is playing ' + SONG.song + ' (the song)');
+		var shaderstuff:Shader = new Shader();
 		super.create();
 		Paths.clearUnusedMemory();
 		CustomFadeTransition.nextCamera = camOther;
@@ -1502,7 +1534,7 @@ class PlayState extends MusicBeatState
 		
 		#if desktop
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), true, songLength);
+		DiscordClient.changePresence(detailsText, SONG.song, iconP2.getCharacter(), true, songLength);
 		#end
 		setOnLuas('songLength', songLength);
 		callOnLuas('onSongStart', []);
@@ -1857,11 +1889,11 @@ class PlayState extends MusicBeatState
 			#if desktop
 			if (startTimer != null && startTimer.finished)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), true, songLength - Conductor.songPosition - ClientPrefs.noteOffset);
+				DiscordClient.changePresence(detailsText, SONG.song, iconP2.getCharacter(), true, songLength - Conductor.songPosition - ClientPrefs.noteOffset);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
+				DiscordClient.changePresence(detailsText, SONG.song, iconP2.getCharacter());
 			}
 			#end
 		}
@@ -1876,11 +1908,11 @@ class PlayState extends MusicBeatState
 		{
 			if (Conductor.songPosition > 0.0)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), true, songLength - Conductor.songPosition - ClientPrefs.noteOffset);
+				DiscordClient.changePresence(detailsText, SONG.song, iconP2.getCharacter(), true, songLength - Conductor.songPosition - ClientPrefs.noteOffset);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
+				DiscordClient.changePresence(detailsText, SONG.song, iconP2.getCharacter());
 			}
 		}
 		#end
@@ -1893,7 +1925,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
+			DiscordClient.changePresence(detailsPausedText, SONG.song, iconP2.getCharacter());
 		}
 		#end
 
@@ -2050,7 +2082,7 @@ class PlayState extends MusicBeatState
 				boyfriendIdleTime = 0;
 			}
 		}
-
+		
 		super.update(elapsed);
 
 		if(ratingName == '?') {
@@ -2088,7 +2120,7 @@ class PlayState extends MusicBeatState
 				//}
 		
 				#if desktop
-				DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
+				DiscordClient.changePresence(detailsPausedText, SONG.song, iconP2.getCharacter());
 				#end
 			}
 		}
@@ -2111,20 +2143,49 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		switch(SONG.song)
-		{
-			default:
-				if (health > 2)
-					health = 2;
-				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
-			case mariosong:
-				if (health > 7)
-					health = 7;
-				iconP1.x = -500;
-				iconP2.x = -500;
-				mariohealth.animation.play(health + '');
-				
+		if(SONG.song == mariosong) {
+			if (health > 7)
+				health = 7;
+			iconP1.x = -500;
+			iconP2.x = -500;
+			if(health > 6) {
+				mariohealth.animation.play('7');
+			} else if(health > 5) {
+				mariohealth.animation.play('6');
+			} else if(health > 4) {
+				mariohealth.animation.play('5');
+			} else if(health > 3) {
+				mariohealth.animation.play('4');
+			} else if(health > 2) {
+				mariohealth.animation.play('3');
+			} else if(health > 1) {
+				mariohealth.animation.play('2');
+			} else {
+				mariohealth.animation.play('1');
+			}
+		} else if(SONG.song == 'round') {
+			if (health > 6)
+				health = 6;
+			iconP1.x = -500;
+			iconP2.x = -500;
+			if(health > 5) {
+				kirbyhealth.animation.play('6');
+			} else if(health > 4) {
+				kirbyhealth.animation.play('5');
+			} else if(health > 3) {
+				kirbyhealth.animation.play('4');
+			} else if(health > 2) {
+				kirbyhealth.animation.play('3');
+			} else if(health > 1) {
+				kirbyhealth.animation.play('2');
+			} else {
+				kirbyhealth.animation.play('1');
+			}
+		} else {
+			if (health > 2)
+				health = 2;
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 		}
 
 		if (healthBar.percent < 20)
@@ -2907,31 +2968,39 @@ class PlayState extends MusicBeatState
 		if(!startingSong) {
 			notes.forEach(function(daNote:Note) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					if(SONG.song == mariosong && daNote.noteType != 'Coin')
-					{
-						health -= 1;
-					}
-					else
-					{
-						switch(SONG.song)
-						{
-							default:
-								health -= 0.05 * healthLoss;
+					if(SONG.song == mariosong && daNote.noteType != 'Coin') {
+						if(daNote.sustainLength >= 1) {
+							health -= 0.5 / daNote.sustainLength;
+						} else {
+							health -= 1;
 						}
+					} else if(SONG.song == 'round') {
+						if(daNote.sustainLength >= 1) {
+							health -= 0.5 / daNote.sustainLength;
+						} else {
+							health -= 1;
+						}
+					} else {
+						health -= 0.05 * healthLoss;
 					}
 				}
 			});
 			for (daNote in unspawnNotes) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					switch(SONG.song)
-					{
-						default:
-							health -= 0.05 * healthLoss;
-						case mariosong:
-							if(daNote.noteType != 'Coin')
-							{
-								health -= 1;
-							}
+					if(SONG.song == mariosong && daNote.noteType != 'Coin') {
+						if(daNote.sustainLength >= 1) {
+							health -= 0.5 / daNote.sustainLength;
+						} else {
+							health -= 1;
+						}
+					} else if(SONG.song == 'round') {
+						if(daNote.sustainLength >= 1) {
+							health -= 0.5 / daNote.sustainLength;
+						} else {
+							health -= 1;
+						}
+					} else {
+						health -= 0.05 * healthLoss;
 					}
 				}
 			}
@@ -3177,11 +3246,6 @@ class PlayState extends MusicBeatState
 		}
 		note.rating = daRating;
 
-		if(daRating == 'sick' && !note.noteSplashDisabled)
-		{
-			spawnNoteSplashOnNote(note);
-		}
-
 		if(!practiceMode && !cpuControlled) {
 			songScore += score;
 			if(!note.ratingDisabled)
@@ -3278,6 +3342,7 @@ class PlayState extends MusicBeatState
 		for (i in seperatedScore)
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
+			numScore.alpha = 0;
 			numScore.cameras = [camHUD];
 			numScore.screenCenter();
 			numScore.x = coolText.x + (43 * daLoop) - 90;
@@ -3488,8 +3553,7 @@ class PlayState extends MusicBeatState
 			notes.forEachAlive(function(daNote:Note)
 			{
 				// hold note functions
-				if (daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit 
-				&& daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit) {
+				if (daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit) {
 					goodNoteHit(daNote);
 				}
 			});
@@ -3534,12 +3598,20 @@ class PlayState extends MusicBeatState
 			}
 		});
 		combo = 0;
-		switch(SONG.song)
-		{
-			default:
-				health -= daNote.missHealth * healthLoss;
-			case mariosong:
+		if(SONG.song == mariosong) {
+			if(daNote.sustainLength >= 1) {
+				health -= 0.5 / daNote.sustainLength;
+			} else {
 				health -= 1;
+			}
+		} else if(SONG.song == 'round') {
+			if(daNote.sustainLength >= 1) {
+				health -= 0.5 / daNote.sustainLength;
+			} else {
+				health -= 1;
+			}
+		} else {
+			health -= daNote.missHealth * healthLoss;
 		}
 		if(instakillOnMiss)
 		{
@@ -3577,12 +3649,12 @@ class PlayState extends MusicBeatState
 	{
 		if (!boyfriend.stunned)
 		{
-			switch(SONG.song)
-			{
-				default:
-					health -= 0.05 * healthLoss;
-				case mariosong:
-					health -= 1;
+			if(SONG.song == mariosong) {
+				health -= 1;
+			} else if(SONG.song == 'round') {
+				health -= 1;
+			} else {
+				health -= 0.05 * healthLoss;
 			}
 			if(instakillOnMiss)
 			{
@@ -3681,21 +3753,19 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
-			if(note.noteType == 'Coin')
-			{
-				switch(note.thecoinstuff)
-				{
-					case 0:
-						FlxG.sound.play(Paths.sound('coin'));
-					case 1:
-						FlxG.sound.play(Paths.sound('redcoin'));
-					case 2:
-						FlxG.sound.play(Paths.sound('bluecoin'));
-				}
-			}
-			else if (ClientPrefs.hitsoundVolume > 0 && !note.hitsoundDisabled)
+			if (ClientPrefs.hitsoundVolume > 0 && !note.hitsoundDisabled)
 			{
 				FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.hitsoundVolume);
+			}
+			if(note.noteType == 'Coin')
+			{
+				if(note.thecoinstuff == 1) {
+					FlxG.sound.play(Paths.sound('redcoin'));
+				} else if(note.thecoinstuff == 2) {
+					FlxG.sound.play(Paths.sound('bluecoin'));
+				} else {
+					FlxG.sound.play(Paths.sound('coin'));
+				}
 			}
 
 			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
@@ -3730,16 +3800,19 @@ class PlayState extends MusicBeatState
 				popUpScore(note);
 				if(combo > 9999) combo = 9999;
 			}
-			switch(SONG.song)
-			{
-				default:
-					health += note.hitHealth * healthGain;
-				case mariosong:
-					if(note.noteType == 'Coin')
-					{
-						health += note.hitHealth;
-						coincounter += 1;
-					}
+			if(SONG.song == mariosong) {
+				if(note.noteType == 'Coin') {
+					health += note.hitHealth;
+					coincounter += 1;
+				}
+			} else if(SONG.song == 'round') {
+				if(note.sustainLength >= 1) {
+					health += 1 / (note.sustainLength / 40);
+				} else {
+					health += 1;
+				}
+			} else {
+				health += note.hitHealth * healthGain;
 			}
 
 			if(!note.noAnimation) {
@@ -3773,6 +3846,14 @@ class PlayState extends MusicBeatState
 						gf.playAnim('cheer', true);
 						gf.specialAnim = true;
 						gf.heyTimer = 0.6;
+					}
+				}
+				if(note.noteType == 'Coin')
+				{
+					if(boyfriend.animOffsets.exists('coin')) {
+						boyfriend.playAnim('coin', true);
+						boyfriend.specialAnim = true;
+						boyfriend.heyTimer = 0.6;
 					}
 				}
 			}
