@@ -2,8 +2,8 @@
 <TextureAtlas imagePath="cartrages.png">
 	<!-- Created with Adobe Animate version 21.0.0.35450 -->
 	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="round normal0000" x="0" y="0" width="101" height="73"/>
-	<SubTexture name="round selected0000" x="111" y="0" width="104" height="70"/>
-	<SubTexture name="stars normal0000" x="0" y="83" width="101" height="73"/>
-	<SubTexture name="stars selected0000" x="111" y="83" width="104" height="71"/>
+	<SubTexture name="stars normal0000" x="0" y="0" width="101" height="73"/>
+	<SubTexture name="stars selected0000" x="111" y="0" width="104" height="70"/>
+	<SubTexture name="coins normal0000" x="0" y="83" width="101" height="73"/>
+	<SubTexture name="coins selected0000" x="111" y="83" width="104" height="71"/>
 </TextureAtlas>
