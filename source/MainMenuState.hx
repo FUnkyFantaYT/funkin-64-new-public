@@ -30,10 +30,12 @@ class MainMenuState extends MusicBeatState
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	var alltext:FlxTypedGroup<FlxText>;
 	var songlist:Array<String> = [
+	'coins',
 	'stars',
-	'round',
+	'expand-dong',
 	'bells',
-	'karting'
+	'karting',
+	'l-is-real'
 	];
 	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
 	var magenta:FlxSprite;
