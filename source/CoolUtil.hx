@@ -142,7 +142,7 @@ class CoolUtil
 	}
 
 	public static function getnoteskin() {
-        if(PlayState.SONG.song == 'stars') {
+        if(PlayState.SONG.song == 'coins') {
             return 'mario_note';
         } else {
             return 'NOTE_assets';

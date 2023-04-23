@@ -227,7 +227,7 @@ class PlayState extends MusicBeatState
 	//psych erngine stuff ^ mod stuff v
 
 	var mariohealth:FlxSprite = new FlxSprite(0, 0);
-	public static var mariosong = 'stars';
+	public static var mariosong = 'coins';
 	public static var coincounter = 0;
 
 	var kirbyhealth:FlxSprite = new FlxSprite(0, 0);
@@ -795,7 +795,7 @@ class PlayState extends MusicBeatState
 			else
 				mariohealth.x = (FlxG.width / 2) - mariohealth.width - 110;
 			add(mariohealth);
-		} else if(SONG.song == 'round') {
+		} else if(SONG.song == 'stars') {
 			health = 6;
 			kirbyhealth.frames = Paths.getSparrowAtlas('kirby health');
 			kirbyhealth.animation.addByPrefix('0', 'khb1.png', 24);
@@ -834,7 +834,7 @@ class PlayState extends MusicBeatState
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
-		if(SONG.song == mariosong || SONG.song == 'round') {
+		if(SONG.song == mariosong || SONG.song == 'stars') {
 			scoreTxt.visible = false;
 			timeBar.visible = false;
 			timeBarBG.visible = false;
@@ -859,7 +859,7 @@ class PlayState extends MusicBeatState
 		healthBarBG.cameras = [camHUD];
 		if(SONG.song == mariosong) {
 			mariohealth.cameras = [camHUD];
-		} else if(SONG.song == 'round') {
+		} else if(SONG.song == 'stars') {
 			kirbyhealth.cameras = [camHUD];
 		} else {
 			mariohealth.cameras != [camHUD];
@@ -2163,7 +2163,7 @@ class PlayState extends MusicBeatState
 			} else {
 				mariohealth.animation.play('1');
 			}
-		} else if(SONG.song == 'round') {
+		} else if(SONG.song == 'stars') {
 			if (health > 6)
 				health = 6;
 			iconP1.x = -500;
@@ -2974,7 +2974,7 @@ class PlayState extends MusicBeatState
 						} else {
 							health -= 1;
 						}
-					} else if(SONG.song == 'round') {
+					} else if(SONG.song == 'stars') {
 						if(daNote.sustainLength >= 1) {
 							health -= 0.5 / daNote.sustainLength;
 						} else {
@@ -2993,7 +2993,7 @@ class PlayState extends MusicBeatState
 						} else {
 							health -= 1;
 						}
-					} else if(SONG.song == 'round') {
+					} else if(SONG.song == 'stars') {
 						if(daNote.sustainLength >= 1) {
 							health -= 0.5 / daNote.sustainLength;
 						} else {
@@ -3604,7 +3604,7 @@ class PlayState extends MusicBeatState
 			} else {
 				health -= 1;
 			}
-		} else if(SONG.song == 'round') {
+		} else if(SONG.song == 'stars') {
 			if(daNote.sustainLength >= 1) {
 				health -= 0.5 / daNote.sustainLength;
 			} else {
@@ -3651,7 +3651,7 @@ class PlayState extends MusicBeatState
 		{
 			if(SONG.song == mariosong) {
 				health -= 1;
-			} else if(SONG.song == 'round') {
+			} else if(SONG.song == 'stars') {
 				health -= 1;
 			} else {
 				health -= 0.05 * healthLoss;
@@ -3805,7 +3805,7 @@ class PlayState extends MusicBeatState
 					health += note.hitHealth;
 					coincounter += 1;
 				}
-			} else if(SONG.song == 'round') {
+			} else if(SONG.song == 'stars') {
 				if(note.sustainLength >= 1) {
 					health += 1 / (note.sustainLength / 40);
 				} else {
