@@ -33,9 +33,9 @@ class MainMenuState extends MusicBeatState
 	'coins',
 	'stars',
 	'expand-dong',
-	'bells',
+	'capitalism',
 	'karting',
-	'l-is-real'
+	'overshadowed'
 	];
 	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
 	var magenta:FlxSprite;
