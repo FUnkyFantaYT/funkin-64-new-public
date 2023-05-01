@@ -34,7 +34,7 @@ class MainMenuState extends MusicBeatState
 	'stars',
 	'expand-dong',
 	'capitalism',
-	'karting',
+	'kartin',
 	'overshadowed'
 	];
 	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
