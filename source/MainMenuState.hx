@@ -32,10 +32,10 @@ class MainMenuState extends MusicBeatState
 	var songlist:Array<String> = [
 	'coins',
 	'stars',
-	'expand-dong',
-	'capitalism',
 	'kartin',
-	'overshadowed'
+	'expand-dong',
+	'capitalism'
+	'overshadowed',
 	];
 	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
 	var magenta:FlxSprite;

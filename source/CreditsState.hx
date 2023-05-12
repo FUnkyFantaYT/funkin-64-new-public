@@ -82,9 +82,10 @@ class CreditsState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Mod Developers'],
+			['Cally Cobble',		'cally',			'Charted Coins and Stars',								'https://www.youtube.com/c/CallyCobble','FFFFFF'],
+			['Mario Drawer',		'md',				'Composed Coins (sorry i dont have a icon yet)',		'https://www.bandlab.com/mario_drawer','ff0000'],
 			['The White Ninja',		'wn',				'Did The Code, 3D Models',									'https://linktr.ee/the_white_ninja', 	'FFFFFF'],
-			['hNation',				'h',				'Composed The Mario 64 Song',			 'https://www.youtube.com/channel/UCqWC8U5f0qhK7xTVReq0Ptg','B43F3E'],
-			['Cally Cobble',		'cally',			'Charted The Mario 64 Song',								'https://www.youtube.com/c/CallyCobble','FFFFFF'],
+			['hNation',				'h',				'Composed Stars',			 'https://www.youtube.com/channel/UCqWC8U5f0qhK7xTVReq0Ptg','B43F3E'],
 			['HexFalc',      	   	'hex',    	    	'Coded The Android Port',     			 'https://youtube.com/channel/UC6CIIVdSW0lseOysu408_EQ','0xFFFFBB1B'],
 			[''],
 			['Psych Engine Team'],
