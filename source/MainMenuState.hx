@@ -34,8 +34,8 @@ class MainMenuState extends MusicBeatState
 	'stars',
 	'kartin',
 	'expand-dong',
-	'capitalism'
-	'overshadowed',
+	'capitalism',
+	'overshadowed'
 	];
 	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
 	var magenta:FlxSprite;
