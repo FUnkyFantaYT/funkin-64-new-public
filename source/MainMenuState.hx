@@ -37,7 +37,7 @@ class MainMenuState extends MusicBeatState
 	'capitalism',
 	'overshadowed'
 	];
-	var menustuff:Array<String> = ['play', 'credits', 'trophies', 'options'];
+	var menustuff:Array<String> = ['play', 'credits', 'trophies'];
 	var magenta:FlxSprite;
 	var debugKeys:Array<FlxKey>;
 	var uhhh = 0;

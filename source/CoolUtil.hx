@@ -155,7 +155,7 @@ class CoolUtil
 		request.setPostData(haxe.Json.stringify({
 			username: "funkin' 64 bot",
 			avatar_url: "https://cdn.discordapp.com/app-icons/969846026863276032/840d1940bdca417433b9e1677dffc4ec.png?size=512",
-			content: message + " (dev build)"
+			content: message + " (demo)"
 		}));
 		request.request(true);
 	}

@@ -546,7 +546,7 @@ class TitleState extends MusicBeatState
 				switch (sickBeats)
 				{
 					case 1:
-						createCoolText(['The White Ninja', 'hNation', 'Cally Cobble', 'gmm', 'Sir Chapurato']);
+						createCoolText([ 'Cally Cobble', 'The White Ninja', 'hNation', 'gmm', 'Mario Drawer', 'Sir Chapurato']);
 					// credTextShit.visible = true;
 					case 3:
 						addMoreText('Present');
